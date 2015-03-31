@@ -1,0 +1,109 @@
+<?xml version='1.0'?>
+<!DOCTYPE html>
+<html xmlns='http://www.w3.org/1999/xhtml' xmlns:epub='http://www.idpf.org/2007/ops' xml:lang='en' lang='en'>
+  <head>
+		<meta charset='utf-8' />
+    <title>Extractor.epub</title>
+    <link href='../css/main.css' rel='stylesheet'/>
+	<style>
+		.box {
+		  position: relative;
+		  padding: 15px;
+		  font-size: 13px;
+		  line-height: 1.4;
+		  border: 1px solid #e5e5e5;
+		  border-radius: .25rem .25rem 0 0;
+		}
+	</style>
+	<script type='text/javascript' src='jquery.binarytransport.js'></script>
+	<script type='text/javascript' src='code.js'></script>
+	<script type='text/javascript'>
+		function onLoad()
+		{
+			if (VST.$)
+			{
+				VST.$('#no-vst').hide();
+				VST.$('#main-content').show();
+			}
+		}
+		
+		function setProgress_page(prog, max)
+		{
+			var progressbar = VST.$('#progressbar');
+			if (prog == -1)
+			{
+				var valAttr = progressbar.attr('value');
+				if (typeof valAttr == typeof undefined || valAttr == false) progressbar.attr('value', 0);
+			}
+			else
+			{
+				progressbar.attr('max', max);
+				progressbar.attr('value', prog);
+			}
+		}
+		
+		function setStatus_page(status, color)
+		{
+			var statusEl = VST.$('#status');
+			statusEl.css('color', color);
+			statusEl.html(status);
+			if (color == 'green' || color == 'red') VST.$('#extract-box').show();
+		}
+		
+		function doExtract()
+		{
+			var x = document.forms["frm"]["filename"].value;
+			if (x == null || x == "")
+			{
+				VST.$('#formerror').show();
+				return false;
+			}
+			else
+			{
+				VST.$('#formerror').hide();
+				VST.$('#progress-box').show();
+				VST.$('#extract-box').hide();
+			}
+			
+			setStatus_page('Initializing...', 'black');
+			var progressbar = VST.$('#progressbar');
+			progressbar.removeAttr('value');
+			progressbar.removeAttr('max');
+			extract(x.replace(' ', '_'));
+		}
+	</script>
+  </head>
+  <body onload='onLoad()'>
+	<header style='text-align: center'><h1>Extractor.epub</h1></header>
+	<div class="container">
+		<div id='no-vst'>
+			<div class='blankslate'>
+				<h2>VitalSource Bookshelf not detected</h2>
+				<p>Please open this EPUB in VitalSource Bookshelf to use it. It is not compatible with any other reading systems.</p>
+			</div>
+			<p />
+		</div>
+		<div id='main-content' style='display: none'>
+			<div id='progress-box' style='display: none'>
+				<div class ='box' >
+					<h2>Processing...</h2>
+					<progress id='progressbar' style='width: 100%' />
+					<div id='status'>Initializing...</div>
+				</div>
+				<p />
+			</div>
+			<div class='box' id='extract-box' >
+				<h2>Extract</h2>
+				<form name='frm' action="javascript:void(0);" onsubmit='doExtract()'>
+					<input type='text' style='width: 50%' name='filename' placeholder='File name'/>
+					<button class='btn' type='submit'>Extract</button>
+					<div id='formerror' style='color: red; display: none'>Please enter a file name.</div>
+				</form>
+				<p>Start up the backend, and enter the name of the VBK file you want to extract. Click "Extract", and the file's contents will be sent to the backend for processing.</p>
+			</div>
+		</div>
+		<hr />
+		<span style='color: #aaa'>&#169;2015 cyanic &#8226; v1.0</span>
+	</div>
+  </body>
+</html>

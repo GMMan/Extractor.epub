@@ -1,0 +1,129 @@
+<?xml version='1.0' encoding='utf-8'?>
+<package version='3.0'
+         unique-identifier='pub-id'
+         xmlns='http://www.idpf.org/2007/opf'
+         prefix='rendition: http://www.idpf.org/vocab/rendition/#'
+		 >
+  <metadata xmlns:dc='http://purl.org/dc/elements/1.1/'>
+
+
+    <!-- File Info -->
+    <dc:format>application/epub+zip</dc:format>
+
+    <!-- UUID -->
+    <dc:identifier id='pub-id'>urn:uuid:a9a9c7e5-e915-4d48-afc1-f4b39f1544d5</dc:identifier>
+    <meta refines='#pub-id' property='identifier-type' scheme='xsd:string'>uuid</meta>
+
+    <meta property='dcterms:modified'>2015-03-28T23:36:52Z</meta>
+
+
+    <!-- Book Info -->
+    <dc:title id='title'>EPUB Developer Tools</dc:title>
+    <meta refines='#title' property='file-as'>EPUB Developer Tools</meta>
+    <meta refines='#title' property='title-type'>main</meta>
+    <meta refines='#title' property='display-seq'>1</meta>
+
+    <dc:description>This is a collection of web developer's tools for messing about with EPUB 3 capable reading software.</dc:description>
+    <dc:subject>Utility</dc:subject>
+
+    <dc:language>en</dc:language>
+    <dc:date>2015-03-28</dc:date>
+
+
+    <!-- Author Info -->
+    <dc:creator id='author'>cyanic</dc:creator>
+    <meta refines='#author' property='file-as'>cyanic</meta>
+    <meta refines='#author' property='role' scheme='marc:relators'>aut</meta>
+  </metadata>
+  <manifest>
+	  <item id="book-cover.xhtml" media-type="application/xhtml+xml" href="book/cover.xhtml" />
+	  <item id="book-table-of-contents.xhtml" media-type="application/xhtml+xml" href="book/table-of-contents.xhtml" properties='nav' />
+	  <item id="book-firebug-index.xhtml" media-type="application/xhtml+xml" href="book/firebug/index.xhtml" properties='scripted' />
+	  <item id="book-firebug-license.txt" media-type="text/plain" href="book/firebug/license.txt" />
+	  <item id="book-firebug-build-firebug-lite.js" media-type="application/x-javascript" href="book/firebug/build/firebug-lite.js" />
+	  <item id="book-firebug-skin-xp-blank.gif" media-type="image/gif" href="book/firebug/skin/xp/blank.gif" />
+	  <item id="book-firebug-skin-xp-buttonBg.png" media-type="image/png" href="book/firebug/skin/xp/buttonBg.png" />
+	  <item id="book-firebug-skin-xp-buttonBgHover.png" media-type="image/png" href="book/firebug/skin/xp/buttonBgHover.png" />
+	  <item id="book-firebug-skin-xp-debugger.css" media-type="text/css" href="book/firebug/skin/xp/debugger.css" />
+	  <item id="book-firebug-skin-xp-detach.png" media-type="image/png" href="book/firebug/skin/xp/detach.png" />
+	  <item id="book-firebug-skin-xp-detachHover.png" media-type="image/png" href="book/firebug/skin/xp/detachHover.png" />
+	  <item id="book-firebug-skin-xp-disable.gif" media-type="image/gif" href="book/firebug/skin/xp/disable.gif" />
+	  <item id="book-firebug-skin-xp-disable.png" media-type="image/png" href="book/firebug/skin/xp/disable.png" />
+	  <item id="book-firebug-skin-xp-disableHover.gif" media-type="image/gif" href="book/firebug/skin/xp/disableHover.gif" />
+	  <item id="book-firebug-skin-xp-disableHover.png" media-type="image/png" href="book/firebug/skin/xp/disableHover.png" />
+	  <item id="book-firebug-skin-xp-down.png" media-type="image/png" href="book/firebug/skin/xp/down.png" />
+	  <item id="book-firebug-skin-xp-downActive.png" media-type="image/png" href="book/firebug/skin/xp/downActive.png" />
+	  <item id="book-firebug-skin-xp-downHover.png" media-type="image/png" href="book/firebug/skin/xp/downHover.png" />
+	  <item id="book-firebug-skin-xp-errorIcon-sm.png" media-type="image/png" href="book/firebug/skin/xp/errorIcon-sm.png" />
+	  <item id="book-firebug-skin-xp-errorIcon.gif" media-type="image/gif" href="book/firebug/skin/xp/errorIcon.gif" />
+	  <item id="book-firebug-skin-xp-errorIcon.png" media-type="image/png" href="book/firebug/skin/xp/errorIcon.png" />
+	  <item id="book-firebug-skin-xp-firebug-1.3a2.css" media-type="text/css" href="book/firebug/skin/xp/firebug-1.3a2.css" />
+	  <item id="book-firebug-skin-xp-firebug.css" media-type="text/css" href="book/firebug/skin/xp/firebug.css" />
+	  <item id="book-firebug-skin-xp-firebug.html" media-type="text/html" href="book/firebug/skin/xp/firebug.html" />
+	  <item id="book-firebug-skin-xp-firebug.IE6.css" media-type="text/css" href="book/firebug/skin/xp/firebug.IE6.css" />
+	  <item id="book-firebug-skin-xp-firebug.png" media-type="image/png" href="book/firebug/skin/xp/firebug.png" />
+	  <item id="book-firebug-skin-xp-group.gif" media-type="image/gif" href="book/firebug/skin/xp/group.gif" />
+	  <item id="book-firebug-skin-xp-html.css" media-type="text/css" href="book/firebug/skin/xp/html.css" />
+	  <item id="book-firebug-skin-xp-infoIcon.gif" media-type="image/gif" href="book/firebug/skin/xp/infoIcon.gif" />
+	  <item id="book-firebug-skin-xp-infoIcon.png" media-type="image/png" href="book/firebug/skin/xp/infoIcon.png" />
+	  <item id="book-firebug-skin-xp-loading_16.gif" media-type="image/gif" href="book/firebug/skin/xp/loading_16.gif" />
+	  <item id="book-firebug-skin-xp-min.png" media-type="image/png" href="book/firebug/skin/xp/min.png" />
+	  <item id="book-firebug-skin-xp-minHover.png" media-type="image/png" href="book/firebug/skin/xp/minHover.png" />
+	  <item id="book-firebug-skin-xp-off.png" media-type="image/png" href="book/firebug/skin/xp/off.png" />
+	  <item id="book-firebug-skin-xp-offHover.png" media-type="image/png" href="book/firebug/skin/xp/offHover.png" />
+	  <item id="book-firebug-skin-xp-pixel_transparent.gif" media-type="image/gif" href="book/firebug/skin/xp/pixel_transparent.gif" />
+	  <item id="book-firebug-skin-xp-roundCorner.svg" media-type="image/svg+xml" href="book/firebug/skin/xp/roundCorner.svg" />
+	  <item id="book-firebug-skin-xp-search.gif" media-type="image/gif" href="book/firebug/skin/xp/search.gif" />
+	  <item id="book-firebug-skin-xp-search.png" media-type="image/png" href="book/firebug/skin/xp/search.png" />
+	  <item id="book-firebug-skin-xp-shadow.gif" media-type="image/gif" href="book/firebug/skin/xp/shadow.gif" />
+	  <item id="book-firebug-skin-xp-shadow2.gif" media-type="image/gif" href="book/firebug/skin/xp/shadow2.gif" />
+	  <item id="book-firebug-skin-xp-shadowAlpha.png" media-type="image/png" href="book/firebug/skin/xp/shadowAlpha.png" />
+	  <item id="book-firebug-skin-xp-sprite.png" media-type="image/png" href="book/firebug/skin/xp/sprite.png" />
+	  <item id="book-firebug-skin-xp-tabHoverLeft.png" media-type="image/png" href="book/firebug/skin/xp/tabHoverLeft.png" />
+	  <item id="book-firebug-skin-xp-tabHoverMid.png" media-type="image/png" href="book/firebug/skin/xp/tabHoverMid.png" />
+	  <item id="book-firebug-skin-xp-tabHoverRight.png" media-type="image/png" href="book/firebug/skin/xp/tabHoverRight.png" />
+	  <item id="book-firebug-skin-xp-tabLeft.png" media-type="image/png" href="book/firebug/skin/xp/tabLeft.png" />
+	  <item id="book-firebug-skin-xp-tabMenuCheckbox.png" media-type="image/png" href="book/firebug/skin/xp/tabMenuCheckbox.png" />
+	  <item id="book-firebug-skin-xp-tabMenuPin.png" media-type="image/png" href="book/firebug/skin/xp/tabMenuPin.png" />
+	  <item id="book-firebug-skin-xp-tabMenuRadio.png" media-type="image/png" href="book/firebug/skin/xp/tabMenuRadio.png" />
+	  <item id="book-firebug-skin-xp-tabMenuTarget.png" media-type="image/png" href="book/firebug/skin/xp/tabMenuTarget.png" />
+	  <item id="book-firebug-skin-xp-tabMenuTargetHover.png" media-type="image/png" href="book/firebug/skin/xp/tabMenuTargetHover.png" />
+	  <item id="book-firebug-skin-xp-tabMid.png" media-type="image/png" href="book/firebug/skin/xp/tabMid.png" />
+	  <item id="book-firebug-skin-xp-tabRight.png" media-type="image/png" href="book/firebug/skin/xp/tabRight.png" />
+	  <item id="book-firebug-skin-xp-textEditorBorders.gif" media-type="image/gif" href="book/firebug/skin/xp/textEditorBorders.gif" />
+	  <item id="book-firebug-skin-xp-textEditorBorders.png" media-type="image/png" href="book/firebug/skin/xp/textEditorBorders.png" />
+	  <item id="book-firebug-skin-xp-textEditorCorners.gif" media-type="image/gif" href="book/firebug/skin/xp/textEditorCorners.gif" />
+	  <item id="book-firebug-skin-xp-textEditorCorners.png" media-type="image/png" href="book/firebug/skin/xp/textEditorCorners.png" />
+	  <item id="book-firebug-skin-xp-titlebarMid.png" media-type="image/png" href="book/firebug/skin/xp/titlebarMid.png" />
+	  <item id="book-firebug-skin-xp-toolbarMid.png" media-type="image/png" href="book/firebug/skin/xp/toolbarMid.png" />
+	  <item id="book-firebug-skin-xp-tree_close.gif" media-type="image/gif" href="book/firebug/skin/xp/tree_close.gif" />
+	  <item id="book-firebug-skin-xp-tree_open.gif" media-type="image/gif" href="book/firebug/skin/xp/tree_open.gif" />
+	  <item id="book-firebug-skin-xp-twistyClosed.png" media-type="image/png" href="book/firebug/skin/xp/twistyClosed.png" />
+	  <item id="book-firebug-skin-xp-twistyOpen.png" media-type="image/png" href="book/firebug/skin/xp/twistyOpen.png" />
+	  <item id="book-firebug-skin-xp-up.png" media-type="image/png" href="book/firebug/skin/xp/up.png" />
+	  <item id="book-firebug-skin-xp-upActive.png" media-type="image/png" href="book/firebug/skin/xp/upActive.png" />
+	  <item id="book-firebug-skin-xp-upHover.png" media-type="image/png" href="book/firebug/skin/xp/upHover.png" />
+	  <item id="book-firebug-skin-xp-warningIcon.gif" media-type="image/gif" href="book/firebug/skin/xp/warningIcon.gif" />
+	  <item id="book-firebug-skin-xp-warningIcon.png" media-type="image/png" href="book/firebug/skin/xp/warningIcon.png" />
+	  <item id="book-jsconsole-console.css" media-type="text/css" href="book/jsconsole/console.css" />
+	  <item id="book-jsconsole-console.js" media-type="application/x-javascript" href="book/jsconsole/console.js" />
+	  <item id="book-jsconsole-EventSource.js" media-type="application/x-javascript" href="book/jsconsole/EventSource.js" />
+	  <item id="book-jsconsole-index.html" media-type="text/html" href="book/jsconsole/index.html" properties='scripted' />
+	  <item id="book-jsconsole-link.png" media-type="image/png" href="book/jsconsole/link.png" />
+	  <item id="book-jsconsole-link-2x.png" media-type="image/png" href="book/jsconsole/link@2x.png" />
+	  <item id="book-jsconsole-MIT-LICENSE.TXT" media-type="text/plain" href="book/jsconsole/MIT-LICENSE.TXT" />
+	  <item id="book-jsconsole-prettify.packed.js" media-type="application/x-javascript" href="book/jsconsole/prettify.packed.js" />
+	</manifest>
+	<spine>
+
+
+    <itemref idref='book-cover.xhtml'/>
+    <itemref idref='book-table-of-contents.xhtml' linear='no'/>
+    <itemref idref='book-firebug-index.xhtml'/>
+    <itemref idref='book-jsconsole-index.html'/>
+
+  </spine>
+  <guide>
+    <reference href="book-cover.xhtml" type="cover" title="Cover"/>
+  </guide>
+</package>

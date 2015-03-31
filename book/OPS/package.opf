@@ -1,0 +1,64 @@
+<?xml version='1.0' encoding='utf-8'?>
+<package version='3.0'
+         unique-identifier='pub-id'
+         xmlns='http://www.idpf.org/2007/opf'
+         prefix='rendition: http://www.idpf.org/vocab/rendition/#'>
+  <metadata xmlns:dc='http://purl.org/dc/elements/1.1/'>
+
+
+    <!-- File Info -->
+    <dc:format>application/epub+zip</dc:format>
+
+    <!-- UUID -->
+    <dc:identifier id='pub-id'>urn:uuid:4b4f0088-179f-4e75-9268-e5b514e81224</dc:identifier>
+    <meta refines='#pub-id' property='identifier-type' scheme='xsd:string'>uuid</meta>
+
+    <meta property='dcterms:modified'>2015-03-31T16:17:43Z</meta>
+
+
+    <!-- Book Info -->
+    <dc:title id='title'>Extractor.epub</dc:title>
+    <meta refines='#title' property='file-as'>Extractor.epub</meta>
+    <meta refines='#title' property='title-type'>main</meta>
+    <meta refines='#title' property='display-seq'>1</meta>
+
+    <dc:description>Extracts content from VitalSource EPUBBooks in conjunction with Extractor.epub Backend.</dc:description>
+    <dc:subject>Utility</dc:subject>
+
+    <dc:language>en</dc:language>
+    <dc:date>2015-03-31</dc:date>
+
+
+    <!-- Author Info -->
+    <dc:creator id='author'>cyanic</dc:creator>
+    <meta refines='#author' property='file-as'>cyanic</meta>
+    <meta refines='#author' property='role' scheme='marc:relators'>aut</meta>
+
+
+    <dc:rights>&#169;2015 cyanic</dc:rights>
+  </metadata><manifest>
+
+
+    <!-- Book -->
+    <item media-type='application/xhtml+xml' id='book-cover'           href='book/cover.xhtml'/>
+    <item media-type='application/xhtml+xml' id='book-toc'             href='book/table-of-contents.xhtml' properties='nav'/>
+    <item media-type='application/xhtml+xml' id='book-content'         href='book/content.xhtml' properties='scripted'/>
+    <item media-type='application/javascript' id='book-code-js'         href='book/code.js'/>
+    <item media-type='application/javascript' id='book-bintransport-js'         href='book/jquery.binarytransport.js'/>
+
+    <!-- CSS -->
+    <item media-type='text/css'              id='css-main'             href='css/main.css'/>
+
+  </manifest><spine>
+
+
+    <itemref idref='book-cover' linear='no'/>
+    <itemref idref='book-toc' linear='no'/>
+    <itemref idref='book-content'/>
+
+
+  </spine>
+  <guide>
+    <reference href="book/cover.xhtml" type="cover" title="Cover"/>
+  </guide>
+</package>
