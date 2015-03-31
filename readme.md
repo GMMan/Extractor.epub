@@ -21,4 +21,12 @@ Usage
 * Enter the name into the 'File name' box on Extractor.epub. Then click 'Extract'.
 * The book will be placed in the same directory as the backend's EXE file.
 * If you don't see a converted .epub file, check both the frontend and the backend for error messages.
+
+For Vista users
+---------------
+You may have trouble because Extractor.epub may use some features that are not available in Internet Explorer 9.
+You may try to switch rendering engines to use Awesomium instead, which does support the needed features.
+To do so, launch Bookshelf in debug mode (use '-d' as the command line argument), and from the 'View' menu select
+'View Debug Options...'. Under 'EPUB Browser Option', choose 'Webkit'. Click OK. Follow the usage instructions as
+normal. Note you may see an error about META-INF files after the status has turned to 'Done'. You can ignore that error.
   
