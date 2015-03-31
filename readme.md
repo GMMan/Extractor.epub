@@ -15,6 +15,7 @@ Usage
   * Type 'http://*.e.pub' into the text box, and click 'Add'. Then click 'Close'.
   * Click 'OK'.
 * Run the backend (ExtractorEpubBackend.exe), and open the Extractor.epub in Bookshelf.
+* Open the book you want to extract. This is important, otherwise the extractor won't be able to access the book's files. You can close it once you opened it once in the session.
 * You need to know the file name of the book you're trying to extract. It is typically the VBID with '.vbk' appended
   when you view the book's information (right click on the book and select 'Show Book Information...'). For the exact
   name, look in the folder where Bookshelf has downloaded all your books (typically in C:\Users\Public\Documents\Shared Books\VitalSource Bookshelf\VitalBook Library).
