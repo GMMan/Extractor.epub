@@ -9,11 +9,12 @@ using System.Xml;
 
 namespace ExtractorEpubBackend
 {
-    class JunkStripper
+    static class JunkStripper
     {
         static readonly string Pattern1 = @"<script type='text\/javascript'> if.+?<\/script>";
         static readonly string Pattern2 = @"<script src='http:\/\/e.pub\/.+?<\/script>";
         static readonly string Pattern3 = @"<script type='text\/javascript'> window.console =.+?<\/script>";
+        static readonly string Pattern4 = @"<script>var VST.+?<\/script>";
 
         public static void StripFile(string path)
         {
@@ -21,6 +22,7 @@ namespace ExtractorEpubBackend
             text = Regex.Replace(text, Pattern1, string.Empty, RegexOptions.Multiline);
             text = Regex.Replace(text, Pattern2, string.Empty, RegexOptions.Multiline);
             text = Regex.Replace(text, Pattern3, string.Empty, RegexOptions.Multiline);
+            text = Regex.Replace(text, Pattern4, string.Empty, RegexOptions.Multiline);
             File.WriteAllText(path, text, Encoding.UTF8);
         }
 

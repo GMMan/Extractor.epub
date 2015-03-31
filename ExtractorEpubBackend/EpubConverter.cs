@@ -23,7 +23,7 @@ namespace ExtractorEpubBackend
                 foreach (string path in Directory.GetFiles(basePath, "*", SearchOption.AllDirectories))
                 {
                     string strippedPath = path.Replace(basePath, "").Replace('\\', '/').TrimStart('/');
-                    if (path == "/mimetype") continue;
+                    if (strippedPath == "mimetype") continue;
 
                     Console.WriteLine("Adding " + strippedPath);
                     using (Stream fileStream = File.OpenRead(path))

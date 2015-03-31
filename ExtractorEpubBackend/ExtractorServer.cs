@@ -28,7 +28,7 @@ namespace ExtractorEpubBackend
             running = true;
             server.Start();
 
-            Console.WriteLine("Extractor.epub backend running");
+            Console.WriteLine("Extractor.epub backend ready and listening");
 
             while (running)
             {
