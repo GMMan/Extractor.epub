@@ -1,34 +1,11 @@
-var backendUrl = 'http://localhost:9080/';
-
-function callBackend(method, query, callback)
-{
-	return VST.$.ajax({url: backendUrl + method, data: query});
-}
-
-function uploadToBackend(path, data)
-{
-	return VST.$.ajax({url: backendUrl + 'upload?path=' + encodeURIComponent(path), type: 'POST', data: data, processData: false});
-}
-
 function downloadData(url)
 {
 	return VST.$.ajax({url: url, dataType: 'binary', responseType:'arraybuffer', processData: false});
 }
 
-function startSession(name)
-{
-	return callBackend('startsession', {name: name});
-}
-
-function endSession(name)
-{
-	return callBackend('endsession', {name: name});
-}
-
 function failSession(name)
 {
 	setProgress(-1, -1);
-	return callBackend('fail', {name: name});
 }
 
 function setStatus(status, color)
@@ -41,11 +18,23 @@ function setProgress(prog, max)
 	if (setProgress_page) setProgress_page(prog, max);
 }
 
-function uintToString(buf) {
+function uintArrayToString(buf) {
 	var uintArray = new Uint8Array(buf);
     var encodedString = String.fromCharCode.apply(null, uintArray),
         decodedString = decodeURIComponent(escape(encodedString));
     return decodedString;
+}
+
+// http://stackoverflow.com/a/18729536/1180879
+function stringToBuffer(str) {
+	var utf8 = unescape(encodeURIComponent(str));
+
+	var arr = [];
+	for (var i = 0; i < utf8.length; i++) {
+		arr.push(utf8.charCodeAt(i));
+	}
+	
+	return arr;
 }
 
 function resolve()
@@ -61,6 +50,7 @@ function extract(name)
 	var basePath = '/' + name + '/';
 	var errored = false;
 	var finalDeferred = VST.$.Deferred();
+	var zipFile;
 	
 	var progress = 0;
 	var progressMax = 0;
@@ -71,7 +61,7 @@ function extract(name)
 	// Yay, abusing .then().
 	.then(function (mimetype)
 	{
-		if (uintToString(mimetype) != 'application/epub+zip')
+		if (uintArrayToString(mimetype) != 'application/epub+zip')
 		{
 			setStatus('Did not find valid EPUB with that name. Please check that you\'ve typed the name right and have opened the book at least once this session.', 'red');
 			setProgress(-1, -1);
@@ -81,8 +71,8 @@ function extract(name)
 		else
 		{
 			// mimetype OK, start session
-			setStatus('Connecting to backend...', 'black');
-			return VST.$.when(startSession(name), mimetype);
+			zipFile = new JSZip();
+			return mimetype;
 		}
 	}, function()
 	{
@@ -90,14 +80,14 @@ function extract(name)
 		setStatus('Did not find valid EPUB with that name. Please check that you\'ve typed the name right and have opened the book at least once this session.', 'red');
 		setProgress(-1, -1);
 	})
-	.then(function(o, mimetype)
+	.then(function(mimetype)
 	{
-		return uploadToBackend(basePath + 'mimetype', mimetype);
+		zipFile.file('mimetype', mimetype, {binary: true, compression: 'STORE'});
 	}, function()
 	{
 		if (errored) return;
 		errored = true;
-		setStatus('Couldn\'t connect to backend. Please make sure backend is running and that http://e.pub is added to Internet Explorer\'s Trusted Sites list.', 'red');
+		setStatus('Failed to create new ZIP file.', 'red');
 		failSession(name);
 	})
 	.then(function()
@@ -109,12 +99,13 @@ function extract(name)
 	{
 		if (errored) return;
 		errored = true;
-		setStatus('Failed to upload mimetype', 'red');
+		setStatus('Failed to add mimetype', 'red');
 		failSession(name);
 	})
 	.then(function(container)
 	{
-		return VST.$.when(uploadToBackend(basePath + 'META-INF/container.xml', container), container);
+		zipFile.file('META-INF/container.xml', container, {binary: true, compression: 'DEFLATE'});
+		return VST.$.when(container);
 	}, function()
 	{
 		if (errored) return;
@@ -122,12 +113,12 @@ function extract(name)
 		setStatus('META-INF/container.xml not found, can\'t continue.', 'red');
 		failSession(name);
 	})
-	.then(function(o, container)
+	.then(function(container)
 	{
 		var containerXml;
 		try
 		{
-			containerXml = VST.$.parseXML(uintToString(container));
+			containerXml = VST.$.parseXML(uintArrayToString(container));
 		}
 		catch (err)
 		{
@@ -152,7 +143,8 @@ function extract(name)
 			downloadData(basePath + rootfileName)
 			.then(function(opf)
 			{
-				return VST.$.when(uploadToBackend(basePath + rootfileName, opf), opf);
+				zipFile.file(rootfileName, opf, {binary: true, compression: 'DEFLATE'});
+				return VST.$.when(opf);
 			}, function()
 			{
 				if (errored) return;
@@ -162,16 +154,21 @@ function extract(name)
 				finalDeferred.reject();
 				return finalDeferred.promise();
 			})
-			.then(function(o, opf)
+			.then(function(opf)
 			{
 				var basePathInner = basePath;
+				var baseZipPath = '';
 				var lastIndexSlash = rootfileName.lastIndexOf('/');
-				if (lastIndexSlash >= 0) basePathInner = basePathInner + rootfileName.substring(0, lastIndexSlash) + '/';
+				if (lastIndexSlash >= 0)
+				{
+					baseZipPath = rootfileName.substring(0, lastIndexSlash) + '/';
+					basePathInner = basePathInner + baseZipPath;
+				}
 
 				var opfXml;
 				try
 				{
-					opfXml = VST.$.parseXML(uintToString(opf));
+					opfXml = VST.$.parseXML(uintArrayToString(opf));
 				}
 				catch (err)
 				{
@@ -192,12 +189,24 @@ function extract(name)
 				
 					var oneItemDeferred = VST.$.Deferred();
 					
+					var theItem = this;
 					var path = VST.$(this).attr('href');
 					downloadData(basePathInner + path)
 					.then(function(file)
 					{
 						setStatus('Transferring ' + path, 'black');
-						uploadToBackend(basePathInner + path, file)
+						// TODO: for HTML/XHTML, convert to string, remove junk, then convert back
+						var mediaType = VST.$(theItem).attr('media-type');
+						if (mediaType === 'text/html' || mediaType === 'application/xhtml+xml')
+						{
+							var content = uintArrayToString(file);
+							content = content.replace(/<script type='text\/javascript'> if.+?<\/script>/g, '')
+								.replace(/<script src='http:\/\/e.pub\/.+?<\/script>/g, '')
+								.replace(/<script type='text\/javascript'> window.console =.+?<\/script>/g, '')
+								.replace(/<script>var VST.+?<\/script>/g, '');
+							file = stringToBuffer(content);
+						}
+						zipFile.file(baseZipPath + path, file, {binary: true, compression: 'DEFLATE'});
 					}, function()
 					{
 						if (errored) return;
@@ -214,7 +223,7 @@ function extract(name)
 					{
 						if (errored) return;
 						errored = true;
-						setStatus('Failed to upload ' + path, 'red');
+						setStatus('Failed to add ' + path, 'red');
 						failSession(name);
 						oneItemDeferred.reject();
 					})
@@ -227,7 +236,7 @@ function extract(name)
 			{
 				if (errored) return;
 				errored = true;
-				setStatus('Failed to upload package file', 'red');
+				setStatus('Failed to add package file', 'red');
 				failSession(name);
 			})
 			.then(function()
@@ -246,7 +255,7 @@ function extract(name)
 	{
 		if (errored) return;
 		errored = true;
-		setStatus('Failed to upload META-INF/container.xml', 'red');
+		setStatus('Failed to add META-INF/container.xml', 'red');
 		failSession(name);
 	})
 	.then(function()
@@ -257,36 +266,37 @@ function extract(name)
 			var hasExtra = false;
 			
 			downloadData(basePath + 'META-INF/' + p + '.xml')
-				.then(function(data)
-				{
-					hasExtra = true;
-					return uploadToBackend(basePath + 'META-INF/' + p + '.xml', data);
-				}, function()
-				{
-					extraPromise.resolve();
-				})
-				.then(function()
-				{
-					extraPromise.resolve();
-				}, function()
-				{
-					if (errored || !hasExtra) return;
-					errored = true;
-					setStatus('Failed to upload ' + 'META-INF/' + p + '.xml', 'red');
-					failSession(name);
-					extraPromise.reject();
-				});
+			.then(function(data)
+			{
+				hasExtra = true;
+				zipFile.file('META-INF/' + p + '.xml', data, {binary: true, compression: 'DEFLATE'});
+			}, function()
+			{
+				extraPromise.resolve();
+			})
+			.then(function()
+			{
+				extraPromise.resolve();
+			}, function()
+			{
+				if (errored || !hasExtra) return;
+				errored = true;
+				setStatus('Failed to add ' + 'META-INF/' + p + '.xml', 'red');
+				failSession(name);
+				extraPromise.reject();
+			});
 				
 			return extraPromise.promise();
 		};
 	
-		setStatus('Transferring remaining files...', 'black');
+		setStatus('Adding remaining files...', 'black');
 		VST.$.when(doExtras('signatures'), doExtras('encryption'), doExtras('metadata'), doExtras('rights'), doExtras('manifest')).promise();
 	})
 	.then(function()
 	{
 		setStatus('Done!', 'green');
-		return endSession(name);
+		var zipResult = zipFile.generate({type:"blob"});
+		saveAs(zipResult, name + '.epub');
 	});
 	
 	return null;

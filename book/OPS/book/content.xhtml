@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 <html xmlns='http://www.w3.org/1999/xhtml' xmlns:epub='http://www.idpf.org/2007/ops' xml:lang='en' lang='en'>
   <head>
-		<meta charset='utf-8' />
+	<meta charset='utf-8' />
     <title>Extractor.epub</title>
     <link href='../css/main.css' rel='stylesheet'/>
 	<style>
@@ -16,11 +16,13 @@
 		}
 	</style>
 	<script type='text/javascript' src='jquery.binarytransport.js'></script>
+	<script type='text/javascript' src='jszip.js'></script>
+	<script type='text/javascript' src='FileSaver.js'></script>
 	<script type='text/javascript' src='code.js'></script>
 	<script type='text/javascript'>
 		function onLoad()
 		{
-			if (VST.$)
+			if (typeof VST != 'undefined' &amp;&amp; typeof VST.$ != 'undefined')
 			{
 				VST.$('#no-vst').hide();
 				VST.$('#main-content').show();
@@ -99,11 +101,11 @@
 					<button class='btn' type='submit'>Extract</button>
 					<div id='formerror' style='color: red; display: none'>Please enter a file name.</div>
 				</form>
-				<p>Start up the backend, and enter the name of the VBK file you want to extract. Click "Extract", and the file's contents will be sent to the backend for processing.</p>
+				<p>Enter the name of the VBK file you want to extract. Click "Extract", and you will be asked to save the EPUB file once it is ready.</p>
 			</div>
 		</div>
 		<hr />
-		<span style='color: #aaa'>&#169;2015 cyanic &#8226; v1.0</span>
+		<span style='color: #aaa'>&#169;2015 cyanic &#8226; v1.1</span>
 	</div>
   </body>
 </html>

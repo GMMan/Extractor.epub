@@ -8,7 +8,7 @@
  *
  */
 
-if (VST.$)
+if (typeof VST != 'undefined' && typeof VST.$ != 'undefined')
 {
 	// use this transport for "binary" data type
 	VST.$.ajaxTransport("+binary", function(options, originalOptions, jqXHR){
