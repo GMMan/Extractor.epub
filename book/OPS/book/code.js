@@ -18,11 +18,24 @@ function setProgress(prog, max)
 	if (setProgress_page) setProgress_page(prog, max);
 }
 
+// https://stackoverflow.com/a/12713326/1180879
+function Uint8ToString(u8a)
+{
+	var CHUNK_SZ = 0x8000;
+	var c = [];
+	for (var i=0; i < u8a.length; i+=CHUNK_SZ) {
+		c.push(String.fromCharCode.apply(null, u8a.subarray(i, i+CHUNK_SZ)));
+	}
+	return c.join("");
+}
+
 function uintArrayToString(buf) {
 	var uintArray = new Uint8Array(buf);
-    var encodedString = String.fromCharCode.apply(null, uintArray),
-        decodedString = decodeURIComponent(escape(encodedString));
-    return decodedString;
+	// Some files are really large and causes stack overflow if you do it in one go.
+	// So use new chunked function.
+	var encodedString = Uint8ToString(uintArray),
+		decodedString = decodeURIComponent(escape(encodedString));
+	return decodedString;
 }
 
 // http://stackoverflow.com/a/18729536/1180879
@@ -195,16 +208,23 @@ function extract(name)
 					.then(function(file)
 					{
 						setStatus('Transferring ' + path, 'black');
-						// TODO: for HTML/XHTML, convert to string, remove junk, then convert back
+						// For HTML/XHTML, convert to string, remove junk, then convert back
 						var mediaType = VST.$(theItem).attr('media-type');
 						if (mediaType === 'text/html' || mediaType === 'application/xhtml+xml')
 						{
-							var content = uintArrayToString(file);
-							content = content.replace(/<script type='text\/javascript'> if.+?<\/script>/g, '')
-								.replace(/<script src='http:\/\/e.pub\/.+?<\/script>/g, '')
-								.replace(/<script type='text\/javascript'> window.console =.+?<\/script>/g, '')
-								.replace(/<script>var VST.+?<\/script>/g, '');
-							file = stringToBuffer(content);
+							// Some publishers and/or VitalSource fill in text/html for unknown files, and this causes exceptions.
+							// This is a good thing, because then we can catch and won't mangle the file. But seriously, get your shit together already.
+							try
+							{
+								var content = uintArrayToString(file);
+								content = content.replace(/<script type='text\/javascript'> if.+?<\/script>/g, '')
+									.replace(/<script src='http:\/\/e.pub\/.+?<\/script>/g, '')
+									.replace(/<script type='text\/javascript'> window.console =.+?<\/script>/g, '')
+									.replace(/<script>var VST.+?<\/script>/g, '');
+								file = stringToBuffer(content);
+							}
+							catch (err)
+							{ }
 						}
 						zipFile.file(baseZipPath + path, file, {binary: true, compression: 'DEFLATE'});
 					}, function()
