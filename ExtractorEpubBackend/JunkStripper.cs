@@ -19,6 +19,7 @@ namespace ExtractorEpubBackend
         public static void StripFile(string path)
         {
             string text = File.ReadAllText(path, Encoding.UTF8);
+            if (text[0] != '<') return; // Ignore files that don't appear to be HTML
             text = Regex.Replace(text, Pattern1, string.Empty, RegexOptions.Multiline);
             text = Regex.Replace(text, Pattern2, string.Empty, RegexOptions.Multiline);
             text = Regex.Replace(text, Pattern3, string.Empty, RegexOptions.Multiline);

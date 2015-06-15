@@ -41,11 +41,24 @@ function setProgress(prog, max)
 	if (setProgress_page) setProgress_page(prog, max);
 }
 
-function uintToString(buf) {
+// https://stackoverflow.com/a/12713326/1180879
+function Uint8ToString(u8a)
+{
+	var CHUNK_SZ = 0x8000;
+	var c = [];
+	for (var i=0; i < u8a.length; i+=CHUNK_SZ) {
+		c.push(String.fromCharCode.apply(null, u8a.subarray(i, i+CHUNK_SZ)));
+	}
+	return c.join("");
+}
+
+function uintArrayToString(buf) {
 	var uintArray = new Uint8Array(buf);
-    var encodedString = String.fromCharCode.apply(null, uintArray),
-        decodedString = decodeURIComponent(escape(encodedString));
-    return decodedString;
+	// Some files are really large and causes stack overflow if you do it in one go.
+	// So use new chunked function.
+	var encodedString = Uint8ToString(uintArray),
+		decodedString = decodeURIComponent(escape(encodedString));
+	return decodedString;
 }
 
 function resolve()
