@@ -143,7 +143,7 @@ function extract(name)
 			return finalDeferred;
 		}
 		
-		var opfPromises = [];
+		var opfPromises = []; // TODO: chain OPF processing as well
 		
 		// Process each file in container.xml
 		VST.$(containerXml).find('rootfile').each(function()
@@ -192,66 +192,69 @@ function extract(name)
 					return finalDeferred.promise();
 				}
 				
-				var itemPromises = [];
-				
 				var items = VST.$(opfXml).find('manifest').first().children();
 				progressMax += items.length;
-				items.each(function()
-				{
-					if (errored) return false;
-				
-					var oneItemDeferred = VST.$.Deferred();
-					
-					var theItem = this;
-					var path = VST.$(this).attr('href');
-					downloadData(basePathInner + path)
-					.then(function(file)
-					{
-						setStatus('Transferring ' + path, 'black');
-						// For HTML/XHTML, convert to string, remove junk, then convert back
-						var mediaType = VST.$(theItem).attr('media-type');
-						if (mediaType === 'text/html' || mediaType === 'application/xhtml+xml')
-						{
-							// Some publishers and/or VitalSource fill in text/html for unknown files, and this causes exceptions.
-							// This is a good thing, because then we can catch and won't mangle the file. But seriously, get your shit together already.
-							try
+				var prevDeferred = VST.$.Deferred() // Try chaining Deferred instead of firing them all at once
+				var finalDeferred = VST.$.Deferred();
+				if (items.length > 0) {
+					var procNextItem = function(index) {					
+						var theItem = items[index];
+							var path = VST.$(theItem).attr('href');
+						return downloadData(basePathInner + path)
+						.then(function(file) {
+							setStatus('Transferring ' + path, 'black');
+							// For HTML/XHTML, convert to string, remove junk, then convert back
+							var mediaType = VST.$(theItem).attr('media-type');
+							if (mediaType === 'text/html' || mediaType === 'application/xhtml+xml')
 							{
-								var content = uintArrayToString(file);
-								content = content.replace(/<script type='text\/javascript'> if.+?<\/script>/g, '')
-									.replace(/<script src='http:\/\/e.pub\/.+?<\/script>/g, '')
-									.replace(/<script type='text\/javascript'> window.console =.+?<\/script>/g, '')
-									.replace(/<script>var VST.+?<\/script>/g, '');
-								file = stringToBuffer(content);
+								// Some publishers and/or VitalSource fill in text/html for unknown files, and this causes exceptions.
+								// This is a good thing, because then we can catch and won't mangle the file. But seriously, get your shit together already.
+								try
+								{
+									var content = uintArrayToString(file);
+									content = content.replace(/<script type='text\/javascript'> if.+?<\/script>/g, '')
+										.replace(/<script src='http:\/\/e.pub\/.+?<\/script>/g, '')
+										.replace(/<script type='text\/javascript'> window.console =.+?<\/script>/g, '')
+										.replace(/<script>var VST.+?<\/script>/g, '');
+									file = stringToBuffer(content);
+								}
+								catch (err)
+								{ }
 							}
-							catch (err)
-							{ }
-						}
-						zipFile.file(baseZipPath + path, file, {binary: true, compression: 'DEFLATE'});
-					}, function()
-					{
-						if (errored) return;
-						errored = true;
-						setStatus('Failed to download ' + path, 'red');
-						failSession(name);
-					})
-					.then(function()
-					{
-						progress += 1;
-						setProgress(progress, progressMax);
-						oneItemDeferred.resolve();
-					}, function()
-					{
-						if (errored) return;
-						errored = true;
-						setStatus('Failed to add ' + path, 'red');
-						failSession(name);
-						oneItemDeferred.reject();
-					})
+							zipFile.file(baseZipPath + path, file, {binary: true, compression: 'DEFLATE'});
+						}, function()
+						{
+							if (errored) return;
+							errored = true;
+							setStatus('Failed to download ' + path, 'red');
+							failSession(name);
+							finalDeferred.reject();
+						})
+						.then(function() {
+							progress += 1;
+							setProgress(progress, progressMax);
+							if (index + 1 < items.length) {
+								prevDeferred = prevDeferred.then(procNextItem);
+								return index + 1;
+							} else {
+								finalDeferred.resolve();
+							}							
+						}, function() {
+							if (errored) return;
+							errored = true;
+							setStatus('Failed to add ' + path, 'red');
+							failSession(name);
+							finalDeferred.reject();
+						});
+					}
 					
-					itemPromises.push(oneItemDeferred);
-				});	
+					prevDeferred.resolve(0);
+					prevDeferred = prevDeferred.then(procNextItem);
+				} else {
+					finalDeferred.resolve();
+				}
 
-				return VST.$.when.apply(undefined, itemPromises).promise();				
+				return finalDeferred.promise();				
 			}, function()
 			{
 				if (errored) return;
