@@ -152,7 +152,7 @@ function extract(name)
 			return finalDeferred;
 		}
 		
-		var opfPromises = [];
+		var opfPromises = []; // TODO: chain OPF processing as well
 		
 		// Process each file in container.xml
 		VST.$(containerXml).find('rootfile').each(function()
@@ -199,43 +199,51 @@ function extract(name)
 				
 				var items = VST.$(opfXml).find('manifest').first().children();
 				progressMax += items.length;
-				items.each(function()
-				{
-					if (errored) return false;
-				
-					var oneItemDeferred = VST.$.Deferred();
+				var prevDeferred = VST.$.Deferred() // Try chaining Deferred instead of firing them all at once
+				var finalDeferred = VST.$.Deferred();
+				if (items.length > 0) {
+					var procNextItem = function(index) {					
+						var path = VST.$(items[index]).attr('href');
+						return downloadData(basePathInner + path)
+						.then(function(file)
+						{
+							setStatus('Transferring ' + path, 'black');
+							return uploadToBackend(basePathInner + path, file);
+						}, function()
+						{
+							if (errored) return;
+							errored = true;
+							setStatus('Failed to download ' + path, 'red');
+							failSession(name);
+							finalDeferred.reject();
+						})
+						.then(function()
+						{
+							progress += 1;
+							setProgress(progress, progressMax);
+							if (index + 1 < items.length) {
+								prevDeferred = prevDeferred.then(procNextItem);
+								return index + 1;
+							} else {
+								finalDeferred.resolve();
+							}							
+						}, function()
+						{
+							if (errored) return;
+							errored = true;
+							setStatus('Failed to upload ' + path, 'red');
+							failSession(name);
+							finalDeferred.reject();
+						});
+					}
 					
-					var path = VST.$(this).attr('href');
-					downloadData(basePathInner + path)
-					.then(function(file)
-					{
-						setStatus('Transferring ' + path, 'black');
-						uploadToBackend(basePathInner + path, file)
-					}, function()
-					{
-						if (errored) return;
-						errored = true;
-						setStatus('Failed to download ' + path, 'red');
-						failSession(name);
-					})
-					.then(function()
-					{
-						progress += 1;
-						setProgress(progress, progressMax);
-						oneItemDeferred.resolve();
-					}, function()
-					{
-						if (errored) return;
-						errored = true;
-						setStatus('Failed to upload ' + path, 'red');
-						failSession(name);
-						oneItemDeferred.reject();
-					})
-					
-					itemPromises.push(oneItemDeferred);
-				});	
+					prevDeferred.resolve(0);
+					prevDeferred = prevDeferred.then(procNextItem);
+				} else {
+					finalDeferred.resolve();
+				}
 
-				return VST.$.when.apply(undefined, itemPromises).promise();				
+				return finalDeferred.promise();				
 			}, function()
 			{
 				if (errored) return;

@@ -13,7 +13,7 @@
     <dc:identifier id='pub-id'>urn:uuid:4b4f0088-179f-4e75-9268-e5b514e81224</dc:identifier>
     <meta refines='#pub-id' property='identifier-type' scheme='xsd:string'>uuid</meta>
 
-    <meta property='dcterms:modified'>2015-06-15T02:30:48Z</meta>
+    <meta property='dcterms:modified'>2015-07-16T12:24:18Z</meta>
 
 
     <!-- Book Info -->
