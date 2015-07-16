@@ -84,7 +84,7 @@ function extract(name)
 	// Yay, abusing .then().
 	.then(function (mimetype)
 	{
-		if (uintToString(mimetype) != 'application/epub+zip')
+		if (uintArrayToString(mimetype) != 'application/epub+zip')
 		{
 			setStatus('Did not find valid EPUB with that name. Please check that you\'ve typed the name right and have opened the book at least once this session.', 'red');
 			setProgress(-1, -1);
@@ -140,7 +140,7 @@ function extract(name)
 		var containerXml;
 		try
 		{
-			containerXml = VST.$.parseXML(uintToString(container));
+			containerXml = VST.$.parseXML(uintArrayToString(container));
 		}
 		catch (err)
 		{
@@ -184,7 +184,7 @@ function extract(name)
 				var opfXml;
 				try
 				{
-					opfXml = VST.$.parseXML(uintToString(opf));
+					opfXml = VST.$.parseXML(uintArrayToString(opf));
 				}
 				catch (err)
 				{
